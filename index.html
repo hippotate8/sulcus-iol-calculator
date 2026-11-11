@@ -81,6 +81,15 @@
 
     <div id="result-area" hidden>
     <section class="results" id="results-grid">
+      <div class="result-card orig">
+        <div class="result-head">
+          <h2>Original Haigis</h2>
+        </div>
+        <div class="metric-caption">Recommended IOL Power</div>
+        <div class="metric" id="orig-power">—</div>
+        <div class="metric-caption">Predicted Refraction</div>
+        <div class="secondary-metric" id="orig-ref">—</div>
+      </div>
       <div class="result-card mod" id="mod-card">
         <div class="result-head">
           <h2>Modified Haigis</h2>
@@ -91,15 +100,6 @@
         <div class="secondary-metric" id="mod-ref">—</div>
       </div>
 
-      <div class="result-card orig">
-        <div class="result-head">
-          <h2>Original Haigis</h2>
-        </div>
-        <div class="metric-caption">Recommended IOL Power</div>
-        <div class="metric" id="orig-power">—</div>
-        <div class="metric-caption">Predicted Refraction</div>
-        <div class="secondary-metric" id="orig-ref">—</div>
-      </div>
     </section>
 
     <section class="card">
@@ -107,15 +107,6 @@
         <h2>IOL Power / Predicted Refraction</h2>
       </div>
       <div class="tables" id="tables-grid">
-        <div id="mod-table-panel">
-          <h3>Modified Haigis</h3>
-          <table>
-            <thead>
-              <tr><th>IOL Power (D)</th><th>Predicted Refraction (D)</th></tr>
-            </thead>
-            <tbody id="mod-table"></tbody>
-          </table>
-        </div>
         <div>
           <h3>Original Haigis</h3>
           <table>
@@ -123,6 +114,15 @@
               <tr><th>IOL Power (D)</th><th>Predicted Refraction (D)</th></tr>
             </thead>
             <tbody id="orig-table"></tbody>
+          </table>
+        </div>
+        <div id="mod-table-panel">
+          <h3>Modified Haigis</h3>
+          <table>
+            <thead>
+              <tr><th>IOL Power (D)</th><th>Predicted Refraction (D)</th></tr>
+            </thead>
+            <tbody id="mod-table"></tbody>
           </table>
         </div>
       </div>
