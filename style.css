@@ -276,3 +276,21 @@ input::placeholder { color: transparent; }
 }
 
 #predicted-acd { background:#f1f5f8; color:#2d5673; font-weight:650; }
+
+/* v1.11 single-line header and editable ACD with silent fallback */
+.header-inner { min-height: 0; padding: 17px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.header-inner h1 { margin: 0; flex: 1; min-width: 0; font-size: clamp(20px, 3.4vw, 35px); line-height: 1.13; letter-spacing: -.03em; white-space: nowrap; }
+.top-logos { position: static; flex: 0 0 auto; display: flex; align-items: center; gap: 5px; }
+.yes-logo, .eom-logo { width: 47px; height: 47px; flex: 0 0 47px; padding: 2px; border-radius: 4px; }
+.yes-logo img, .eom-logo img { width: 100%; height: 100%; object-fit: contain; }
+#acd { background: white; color: #16324a; font-weight: 400; }
+footer { max-width: 980px; margin: 0 auto; text-align: center; padding: 0 18px 28px; line-height: 1.5; }
+footer .publication { color: #637e92; font-size: 12px; margin-bottom: 12px; }
+footer .copyright { color: #758a9b; font-size: 12px; }
+@media(max-width: 560px) {
+ .header-inner { padding: 13px 10px; gap: 6px; }
+ .header-inner h1 { font-size: clamp(16px, 4.3vw, 23px); letter-spacing: -.045em; }
+ .yes-logo, .eom-logo { width: 33px; height: 33px; flex-basis: 33px; padding: 1px; }
+ .top-logos { gap: 3px; }
+ footer .publication { font-size: 11px; }
+}

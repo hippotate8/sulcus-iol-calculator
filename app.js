@@ -1,7 +1,7 @@
 import { calculate, MODELS } from './core.mjs';
 
 const $ = (id) => document.getElementById(id);
-const fieldIds = ['al', 'k1', 'k2', 'target'];
+const fieldIds = ['al', 'acd', 'k1', 'k2', 'target'];
 const requiredIds = ['al', 'k1', 'k2', 'target'];
 const otherIds = ['other-a0', 'other-a1', 'other-a2'];
 
@@ -25,16 +25,10 @@ const ACD_SLOPE = 0.19432154726065398;
 export function predictAcd(al) {
   return Math.max(1.5, Math.min(5.0, ACD_INTERCEPT + ACD_SLOPE * al));
 }
-function updatePredictedAcd() {
-  const input = $('al').value.trim();
-  const al = Number(input);
-  $('predicted-acd').value = input !== '' && Number.isFinite(al) && al > 0
-    ? predictAcd(al).toFixed(2)
-    : '';
-}
 function values() {
-  const v = Object.fromEntries(fieldIds.map(id => [id, Number($(id).value)]));
-  v.acd = predictAcd(v.al);
+  const v = Object.fromEntries(requiredIds.map(id => [id, Number($(id).value)]));
+  const acdValue = $('acd').value.trim();
+  v.acd = acdValue === '' ? predictAcd(v.al) : Number(acdValue);
   return v;
 }
 const fmtRef = n => `${n >= 0 ? '+' : ''}${n.toFixed(2)} D`;
@@ -77,16 +71,13 @@ function calculateOnClick() {
 $('model').addEventListener('change', updateType);
 [...fieldIds, ...otherIds].forEach(id => $(id).addEventListener('input', () => {
   $('error').hidden = true;
-  updatePredictedAcd();
   blankResults();
 }));
 $('calculate').addEventListener('click', calculateOnClick);
 $('reset').addEventListener('click', () => {
   [...fieldIds, ...otherIds].forEach(id => { $(id).value = ''; });
   $('model').value = 'ar40e';
-  updatePredictedAcd();
   updateType();
 });
-updatePredictedAcd();
 updateType();
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));

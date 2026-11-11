@@ -7,27 +7,22 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Eom Sulcus IOL">
-  <meta name="description" content="Eom Sulcus IOL Calculator">
+  <meta name="description" content="EOM Sulcus IOL Calculator">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" href="./icon-192.png">
   <link rel="apple-touch-icon" href="./icon-192.png">
-  <title>Eom Sulcus IOL Calculator</title>
+  <title>EOM Sulcus IOL Calculator</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <header>
     <div class="header-inner">
+      <h1>EOM Sulcus IOL Calculator</h1>
       <div class="top-logos">
-        <a class="yes-logo" href="https://www.yes-oph.com/" target="_blank" rel="noopener noreferrer" aria-label="예스안과 공식 홈페이지로 이동">
-          <img src="./yes-logo.png" alt="YES EYE CLINIC 로고">
+        <a class="yes-logo" href="https://www.yes-oph.com/" target="_blank" rel="noopener noreferrer" aria-label="YES Eye Clinic 홈페이지">
+          <img src="./yes-logo.png" alt="YES Eye Clinic">
         </a>
-        <div class="eom-logo" aria-label="Hanguk EOM Inc.">
-          <img src="./eom-logo.png" alt="Hanguk EOM Inc. 로고">
-        </div>
-      </div>
-      <div class="head-title">
-        <h1>Eom Sulcus IOL Calculator</h1>
-        
+        <div class="eom-logo"><img src="./eom-logo.png" alt="Hanguk EOM Inc."></div>
       </div>
     </div>
   </header>
@@ -54,8 +49,8 @@
           <input id="al" type="number" inputmode="decimal" step="0.01">
         </div>
         <div>
-          <label for="predicted-acd">Predicted ACD <small>mm</small></label>
-          <input id="predicted-acd" type="text" readonly tabindex="-1" aria-label="Predicted ACD">
+          <label for="acd">ACD <small>mm</small></label>
+          <input id="acd" type="number" inputmode="decimal" step="0.01">
         </div>
         <div>
           <label for="k1">K1 <small>D</small></label>
@@ -135,7 +130,10 @@
     </div>
   </main>
 
-  <footer>© EOM</footer>
+  <footer>
+    <div class="publication">Youngsub Eom et al. Modified Haigis Formula Effective Lens Position Equation for Ciliary Sulcus-Implanted Intraocular Lenses. <i>Am J Ophthalmol.</i> 2016;161:142-149.e1-2.</div>
+    <div class="copyright">© Hanguk EOM Inc. &amp; YES Eye Clinic</div>
+  </footer>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
