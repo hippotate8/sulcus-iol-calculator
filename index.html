@@ -1,13 +1,142 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#113d63"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Sulcus IOL"><meta name="description" content="Sulcus IOL Calculator — Modified and Original Haigis calculations"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" type="image/png" href="./icon-192.png"><link rel="apple-touch-icon" href="./icon-192.png"><title>Sulcus IOL Calculator | EOM</title><link rel="stylesheet" href="./style.css"></head><body>
-<header><div class="brand"><a class="yes-logo" href="https://www.yes-oph.com/" target="_blank" rel="noopener noreferrer" aria-label="예스안과 공식 홈페이지로 이동"><img src="./yes-logo.png" alt="YES EYE CLINIC 정식 로고"><span class="link-indicator">공식 홈페이지 ↗</span></a><div class="brand-divider"></div><div class="eom-logo" aria-label="Hanguk EOM Inc."><img src="./eom-logo.png" alt="Hanguk EOM Inc. 정식 로고"></div></div><div class="head-title"><h1>Sulcus IOL Calculator</h1><p>Modified Haigis vs Original Haigis · v1.05 worksheet port</p></div></header>
-<main><section class="card"><div class="section-head"><h2>Biometry & IOL</h2><button id="reset" class="ghost" type="button">초기화</button></div><label for="model">IOL type</label><select id="model"><option value="za9003">TECNIS ZA9003</option><option value="ar40e">SENSAR AR40E</option><option value="other">Other IOL (Excel row 6)</option></select><div class="inputs">
-<div><label for="al">Axial length <small>AL · mm</small></label><input id="al" type="number" inputmode="decimal" step="0.01" value="24.13"></div>
-<div><label for="acd">Anterior chamber depth <small>ACD · mm</small></label><input id="acd" type="number" inputmode="decimal" step="0.01" value="3.50"></div>
-<div><label for="k1">K1 <small>D</small></label><input id="k1" type="number" inputmode="decimal" step="0.01" value="41.19"></div>
-<div><label for="k2">K2 <small>D</small></label><input id="k2" type="number" inputmode="decimal" step="0.01" value="41.19"></div>
-<div><label for="iol">Selected IOL power <small>D</small></label><input id="iol" type="number" inputmode="decimal" step="0.50" value="20.00"></div>
-<div><label for="target">Target refraction <small>D</small></label><input id="target" type="number" inputmode="decimal" step="0.25" value="0.00"></div></div><div class="quick"><span>Mean K <b id="mean-k">—</b></span><span>Corneal radius <b id="radius">—</b> mm</span></div><p class="error" id="error" role="alert" hidden></p></section>
-<section class="results"><div class="result-card mod"><div class="result-head"><h2>Modified Haigis</h2><span class="chip">Sulcus model</span></div><div class="metric-caption">Calculated IOL for selected target</div><div class="metric" id="mod-ideal">—</div><div class="metric-caption">Predicted refraction at selected IOL</div><div class="secondary-metric" id="mod-ref">—</div><div class="muted" id="mod-elp">ELP —</div></div><div class="result-card orig"><div class="result-head"><h2>Original Haigis</h2><span class="chip">Reference</span></div><div class="metric-caption">Calculated IOL for selected target</div><div class="metric" id="orig-ideal">—</div><div class="metric-caption">Predicted refraction at selected IOL</div><div class="secondary-metric" id="orig-ref">—</div><div class="muted" id="orig-elp">ELP —</div></div></section>
-<section class="card"><div class="section-head"><h2>IOL power / predicted refraction</h2><small>0.50 D intervals · worksheet 8 rows</small></div><div class="tables"><div><h3>Modified Haigis</h3><table><thead><tr><th>IOL (D)</th><th>Target (D)</th></tr></thead><tbody id="mod-table"></tbody></table></div><div><h3>Original Haigis</h3><table><thead><tr><th>IOL (D)</th><th>Target (D)</th></tr></thead><tbody id="orig-table"></tbody></table></div></div></section>
-<details class="card settings"><summary>사용된 IOL 상수 확인 · 수정</summary><p>엑셀 Database 시트에 기록된 모델별 상수입니다. Other IOL은 원본 엑셀 6행의 기본값을 사용하며, 필요하면 직접 변경하세요.</p><div class="inputs" id="constant-inputs"></div><button class="ghost" id="restore-constants" type="button">선택 모델 상수 복원</button></details>
-<section class="note"><strong>Clinical use notice</strong><p>원본 엑셀 Database 시트 수식을 웹용으로 이식했습니다. 엑셀 VBA 사용자폼의 세부 처리 방식은 확인되지 않았으므로 실제 임상 사용 전에 원본 프로그램 및 임상 결과와 대조 검증이 필요합니다. 특히 Other IOL 상수는 모델별 최적화 상수를 입력해야 합니다. 본 도구는 의료진의 임상적 판단을 대신하지 않습니다.</p><p>결과는 기기 입력값과 상수에 따라 달라지며 개인정보는 서버로 전송하지 않습니다. 모바일 오프라인 사용 가능.</p></section></main><footer>© EOM · Sulcus IOL Calculator <span id="install-note"></span></footer><script type="module" src="./app.js"></script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#113d63">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Eom Sulcus IOL">
+  <meta name="description" content="Eom Sulcus IOL Calculator">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <title>Eom Sulcus IOL Calculator</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="top-logos">
+        <a class="yes-logo" href="https://www.yes-oph.com/" target="_blank" rel="noopener noreferrer" aria-label="예스안과 공식 홈페이지로 이동">
+          <img src="./yes-logo.png" alt="YES EYE CLINIC 로고">
+        </a>
+        <div class="eom-logo" aria-label="Hanguk EOM Inc.">
+          <img src="./eom-logo.png" alt="Hanguk EOM Inc. 로고">
+        </div>
+      </div>
+      <div class="head-title">
+        <h1>Eom Sulcus IOL Calculator</h1>
+        <p>Modified Haigis / Original Haigis</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="section-head">
+        <h2>Input</h2>
+        <button id="reset" class="ghost" type="button">입력 지우기</button>
+      </div>
+
+      <div class="field-block">
+        <label for="model">IOL Type</label>
+        <select id="model">
+          <option value="za9003">TECNIS ZA9003</option>
+          <option value="ar40e">SENSAR AR40E</option>
+          <option value="other">Other IOL</option>
+        </select>
+      </div>
+
+      <div class="inputs biometrics">
+        <div>
+          <label for="al">AL <small>mm</small></label>
+          <input id="al" type="number" inputmode="decimal" step="0.01" placeholder="24.13">
+        </div>
+        <div>
+          <label for="acd">ACD <small>mm</small></label>
+          <input id="acd" type="number" inputmode="decimal" step="0.01" placeholder="3.50">
+        </div>
+        <div>
+          <label for="k1">K1 <small>D</small></label>
+          <input id="k1" type="number" inputmode="decimal" step="0.01" placeholder="41.19">
+        </div>
+        <div>
+          <label for="k2">K2 <small>D</small></label>
+          <input id="k2" type="number" inputmode="decimal" step="0.01" placeholder="41.19">
+        </div>
+        <div class="wide">
+          <label for="target">Target Refraction <small>D</small></label>
+          <input id="target" type="number" inputmode="decimal" step="0.25" placeholder="0.00">
+        </div>
+      </div>
+
+      <section class="constants-panel" id="other-constants" hidden>
+        <div class="section-subhead"><h3>Haigis Constants — Other IOL</h3></div>
+        <div class="inputs constants-grid">
+          <div><label for="other-a0">a0</label><input id="other-a0" type="number" inputmode="decimal" step="any" placeholder="a0"></div>
+          <div><label for="other-a1">a1</label><input id="other-a1" type="number" inputmode="decimal" step="any" placeholder="a1"></div>
+          <div><label for="other-a2">a2</label><input id="other-a2" type="number" inputmode="decimal" step="any" placeholder="a2"></div>
+        </div>
+        <p class="small-note">Other IOL에서는 입력한 Haigis 상수를 이용한 Original Haigis 결과만 제공합니다.</p>
+      </section>
+      <button id="calculate" class="calculate" type="button">Calculate</button>
+
+      <p class="error" id="error" role="alert" hidden></p>
+    </section>
+
+    <div id="result-area" hidden>
+    <section class="results" id="results-grid">
+      <div class="result-card mod" id="mod-card">
+        <div class="result-head">
+          <h2>Modified Haigis</h2>
+        </div>
+        <div class="metric-caption">Recommended IOL Power</div>
+        <div class="metric" id="mod-power">—</div>
+        <div class="metric-caption">Predicted Refraction</div>
+        <div class="secondary-metric" id="mod-ref">—</div>
+      </div>
+
+      <div class="result-card orig">
+        <div class="result-head">
+          <h2>Original Haigis</h2>
+        </div>
+        <div class="metric-caption">Recommended IOL Power</div>
+        <div class="metric" id="orig-power">—</div>
+        <div class="metric-caption">Predicted Refraction</div>
+        <div class="secondary-metric" id="orig-ref">—</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-head compact">
+        <h2>IOL Power / Predicted Refraction</h2>
+      </div>
+      <div class="tables" id="tables-grid">
+        <div id="mod-table-panel">
+          <h3>Modified Haigis</h3>
+          <table>
+            <thead>
+              <tr><th>IOL Power (D)</th><th>Predicted Refraction (D)</th></tr>
+            </thead>
+            <tbody id="mod-table"></tbody>
+          </table>
+        </div>
+        <div>
+          <h3>Original Haigis</h3>
+          <table>
+            <thead>
+              <tr><th>IOL Power (D)</th><th>Predicted Refraction (D)</th></tr>
+            </thead>
+            <tbody id="orig-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    </div>
+  </main>
+
+  <footer>© EOM</footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

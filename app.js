@@ -1,14 +1,73 @@
-import {calculate,MODELS} from './core.mjs';
-const $=id=>document.getElementById(id);let overrides={};
-const defaults={al:24.13,k1:41.19,k2:41.19,acd:3.5,iol:20,target:0};
-function current(){return Object.fromEntries(Object.keys(defaults).map(k=>[k,Number($(k).value)]))}
-function settings(){const type=$('model').value;return overrides[type]||structuredClone(MODELS[type])}
-function editConstants(){const v=settings();const root=$('constant-inputs');root.innerHTML='';for(const [group,keys] of [['modified',['a0','a1','a2','a3']],['original',['a0','a1','a2']]])for(const key of keys){const box=document.createElement('div');const lbl=document.createElement('label');const id=`c-${group}-${key}`;lbl.htmlFor=id;lbl.textContent=`${group==='modified'?'Modified':'Original'} ${key}`;const field=document.createElement('input');field.id=id;field.type='number';field.step='any';field.value=v[group][key];field.addEventListener('input',()=>{const copy=structuredClone(settings());if(field.value.trim()!=='')copy[group][key]=Number(field.value);overrides[$('model').value]=copy;update()});box.append(lbl,field);root.append(box)}}
-const fmt=(n,d=2)=>`${n>=0?'+':''}${n.toFixed(d)} D`;
-function renderTable(id,rows,target){$(id).innerHTML=rows.map(row=>`<tr class="${Math.abs(row.refraction-target)<=0.25?'closest':''}"><td>${row.power.toFixed(2)}</td><td>${fmt(row.refraction)}</td></tr>`).join('')}
-function update(){const e=$('error');e.hidden=true;try{const v=current();if(Object.keys(defaults).some(k=>$(k).value.trim()===''))throw Error('모든 항목을 입력해 주세요.');const r=calculate(v,settings());$('mean-k').textContent=r.k.toFixed(2)+' D';$('radius').textContent=r.R.toFixed(3);
- for(const [prefix,o] of [['mod',r.modified],['orig',r.original]]){$(`${prefix}-ideal`).textContent=fmt(o.ideal);$(`${prefix}-ref`).textContent=fmt(o.atSelected);$(`${prefix}-elp`).textContent=`ELP ${o.elp.toFixed(3)} mm`;renderTable(`${prefix}-table`,o.table,v.target)}
- }catch(ex){e.textContent=ex.message;e.hidden=false;for(const id of ['mod-ideal','mod-ref','orig-ideal','orig-ref','mod-elp','orig-elp'])$(id).textContent='—';for(const id of ['mod-table','orig-table'])$(id).innerHTML=''}}
-$('model').addEventListener('change',()=>{editConstants();update()});for(const k of Object.keys(defaults))$(k).addEventListener('input',update);
-$('reset').addEventListener('click',()=>{Object.entries(defaults).forEach(([k,v])=>$(k).value=v);$('model').value='za9003';editConstants();update()});$('restore-constants').addEventListener('click',()=>{delete overrides[$('model').value];editConstants();update()});editConstants();update();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+import { calculate, MODELS } from './core.mjs';
+
+const $ = (id) => document.getElementById(id);
+const fieldIds = ['al', 'acd', 'k1', 'k2', 'target'];
+const otherIds = ['other-a0', 'other-a1', 'other-a2'];
+
+function blankResults() {
+  for (const id of ['mod-power', 'mod-ref', 'orig-power', 'orig-ref']) $(id).textContent = '—';
+  $('mod-table').innerHTML = '';
+  $('orig-table').innerHTML = '';
+  $('result-area').hidden = true;
+}
+function settings() {
+  const type = $('model').value;
+  const constants = structuredClone(MODELS[type]);
+  if (type === 'other') {
+    for (const key of ['a0', 'a1', 'a2']) constants.original[key] = Number($(`other-${key}`).value);
+  }
+  return constants;
+}
+function values() {
+  return Object.fromEntries(fieldIds.map(id => [id, Number($(id).value)]));
+}
+const fmtRef = n => `${n >= 0 ? '+' : ''}${n.toFixed(2)} D`;
+const fmtPower = n => `${n.toFixed(1)} D`;
+function renderTable(id, rows, power) {
+  $(id).innerHTML = rows.map(row => `<tr class="${row.power === power ? 'closest' : ''}"><td>${row.power.toFixed(1)}</td><td>${fmtRef(row.refraction)}</td></tr>`).join('');
+}
+function updateType() {
+  const other = $('model').value === 'other';
+  $('other-constants').hidden = !other;
+  $('mod-card').hidden = other;
+  $('mod-table-panel').hidden = other;
+  $('results-grid').classList.toggle('single', other);
+  $('tables-grid').classList.toggle('single', other);
+  $('error').hidden = true;
+  blankResults();
+}
+function calculateOnClick() {
+  $('error').hidden = true;
+  blankResults();
+  try {
+    if (!fieldIds.every(id => $(id).value.trim() !== '')) throw Error('AL, K1, K2, ACD, Target Refraction을 모두 입력해 주세요.');
+    const other = $('model').value === 'other';
+    if (other && !otherIds.every(id => $(id).value.trim() !== '')) throw Error('Other IOL의 Haigis 상수 a0, a1, a2를 모두 입력해 주세요.');
+    const r = calculate(values(), settings());
+    if (!other) {
+      $('mod-power').textContent = fmtPower(r.modified.recommendedPower);
+      $('mod-ref').textContent = fmtRef(r.modified.recommendedRefraction);
+      renderTable('mod-table', r.modified.table, r.modified.recommendedPower);
+    }
+    $('orig-power').textContent = fmtPower(r.original.recommendedPower);
+    $('orig-ref').textContent = fmtRef(r.original.recommendedRefraction);
+    renderTable('orig-table', r.original.table, r.original.recommendedPower);
+    $('result-area').hidden = false;
+  } catch (ex) {
+    $('error').textContent = ex.message;
+    $('error').hidden = false;
+  }
+}
+$('model').addEventListener('change', updateType);
+[...fieldIds, ...otherIds].forEach(id => $(id).addEventListener('input', () => {
+  $('error').hidden = true;
+  blankResults();
+}));
+$('calculate').addEventListener('click', calculateOnClick);
+$('reset').addEventListener('click', () => {
+  [...fieldIds, ...otherIds].forEach(id => { $(id).value = ''; });
+  $('model').value = 'za9003';
+  updateType();
+});
+updateType();
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
