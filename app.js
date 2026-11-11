@@ -1,7 +1,8 @@
 import { calculate, MODELS } from './core.mjs';
 
 const $ = (id) => document.getElementById(id);
-const fieldIds = ['al', 'acd', 'k1', 'k2', 'target'];
+const fieldIds = ['al', 'k1', 'k2', 'target'];
+const requiredIds = ['al', 'k1', 'k2', 'target'];
 const otherIds = ['other-a0', 'other-a1', 'other-a2'];
 
 function blankResults() {
@@ -18,8 +19,23 @@ function settings() {
   }
   return constants;
 }
+// OLS regression from 1,600 paired AL/ACD measurements (mm).
+const ACD_INTERCEPT = -1.494421292947498;
+const ACD_SLOPE = 0.19432154726065398;
+export function predictAcd(al) {
+  return Math.max(1.5, Math.min(5.0, ACD_INTERCEPT + ACD_SLOPE * al));
+}
+function updatePredictedAcd() {
+  const input = $('al').value.trim();
+  const al = Number(input);
+  $('predicted-acd').value = input !== '' && Number.isFinite(al) && al > 0
+    ? predictAcd(al).toFixed(2)
+    : '';
+}
 function values() {
-  return Object.fromEntries(fieldIds.map(id => [id, Number($(id).value)]));
+  const v = Object.fromEntries(fieldIds.map(id => [id, Number($(id).value)]));
+  v.acd = predictAcd(v.al);
+  return v;
 }
 const fmtRef = n => `${n >= 0 ? '+' : ''}${n.toFixed(2)} D`;
 const fmtPower = n => `${n.toFixed(1)} D`;
@@ -40,7 +56,7 @@ function calculateOnClick() {
   $('error').hidden = true;
   blankResults();
   try {
-    if (!fieldIds.every(id => $(id).value.trim() !== '')) throw Error('AL, K1, K2, ACD, Target Refraction을 모두 입력해 주세요.');
+    if (!requiredIds.every(id => $(id).value.trim() !== '')) throw Error('AL, K1, K2, Target Refraction을 입력해 주세요.');
     const other = $('model').value === 'other';
     if (other && !otherIds.every(id => $(id).value.trim() !== '')) throw Error('Other IOL의 Haigis 상수 a0, a1, a2를 모두 입력해 주세요.');
     const r = calculate(values(), settings());
@@ -61,13 +77,16 @@ function calculateOnClick() {
 $('model').addEventListener('change', updateType);
 [...fieldIds, ...otherIds].forEach(id => $(id).addEventListener('input', () => {
   $('error').hidden = true;
+  updatePredictedAcd();
   blankResults();
 }));
 $('calculate').addEventListener('click', calculateOnClick);
 $('reset').addEventListener('click', () => {
   [...fieldIds, ...otherIds].forEach(id => { $(id).value = ''; });
-  $('model').value = 'za9003';
+  $('model').value = 'ar40e';
+  updatePredictedAcd();
   updateType();
 });
+updatePredictedAcd();
 updateType();
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));

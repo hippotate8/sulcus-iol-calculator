@@ -27,7 +27,7 @@
       </div>
       <div class="head-title">
         <h1>Eom Sulcus IOL Calculator</h1>
-        <p>Modified Haigis / Original Haigis</p>
+        
       </div>
     </div>
   </header>
@@ -42,8 +42,8 @@
       <div class="field-block">
         <label for="model">IOL Type</label>
         <select id="model">
-          <option value="za9003">TECNIS ZA9003</option>
           <option value="ar40e">SENSAR AR40E</option>
+          <option value="za9003">TECNIS ZA9003</option>
           <option value="other">Other IOL</option>
         </select>
       </div>
@@ -51,34 +51,33 @@
       <div class="inputs biometrics">
         <div>
           <label for="al">AL <small>mm</small></label>
-          <input id="al" type="number" inputmode="decimal" step="0.01" placeholder="24.13">
+          <input id="al" type="number" inputmode="decimal" step="0.01">
         </div>
         <div>
-          <label for="acd">ACD <small>mm</small></label>
-          <input id="acd" type="number" inputmode="decimal" step="0.01" placeholder="3.50">
+          <label for="predicted-acd">Predicted ACD <small>mm</small></label>
+          <input id="predicted-acd" type="text" readonly tabindex="-1" aria-label="Predicted ACD">
         </div>
         <div>
           <label for="k1">K1 <small>D</small></label>
-          <input id="k1" type="number" inputmode="decimal" step="0.01" placeholder="41.19">
+          <input id="k1" type="number" inputmode="decimal" step="0.01">
         </div>
         <div>
           <label for="k2">K2 <small>D</small></label>
-          <input id="k2" type="number" inputmode="decimal" step="0.01" placeholder="41.19">
+          <input id="k2" type="number" inputmode="decimal" step="0.01">
         </div>
         <div class="wide">
           <label for="target">Target Refraction <small>D</small></label>
-          <input id="target" type="number" inputmode="decimal" step="0.25" placeholder="0.00">
+          <input id="target" type="number" inputmode="decimal" step="0.25">
         </div>
       </div>
 
       <section class="constants-panel" id="other-constants" hidden>
         <div class="section-subhead"><h3>Haigis Constants — Other IOL</h3></div>
         <div class="inputs constants-grid">
-          <div><label for="other-a0">a0</label><input id="other-a0" type="number" inputmode="decimal" step="any" placeholder="a0"></div>
-          <div><label for="other-a1">a1</label><input id="other-a1" type="number" inputmode="decimal" step="any" placeholder="a1"></div>
-          <div><label for="other-a2">a2</label><input id="other-a2" type="number" inputmode="decimal" step="any" placeholder="a2"></div>
+          <div><label for="other-a0">a0</label><input id="other-a0" type="number" inputmode="decimal" step="any"></div>
+          <div><label for="other-a1">a1</label><input id="other-a1" type="number" inputmode="decimal" step="any"></div>
+          <div><label for="other-a2">a2</label><input id="other-a2" type="number" inputmode="decimal" step="any"></div>
         </div>
-        <p class="small-note">Other IOL에서는 입력한 Haigis 상수를 이용한 Original Haigis 결과만 제공합니다.</p>
       </section>
       <button id="calculate" class="calculate" type="button">Calculate</button>
 
